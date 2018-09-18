@@ -34,5 +34,6 @@ func main() {
 	)
 
 	setHelpTemplates()
+
 	akamai.App.Run(os.Args)
 }

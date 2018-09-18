@@ -2,10 +2,14 @@
 
 
 [[projects]]
+  branch = "add-api-endpoints-v2"
   name = "github.com/akamai/AkamaiOPEN-edgegrid-golang"
-  packages = ["edgegrid"]
-  revision = "196fbdab2db66d0e231cc363efb63454f55fed1c"
-  version = "v0.6.2"
+  packages = [
+    "client-v1",
+    "edgegrid",
+    "jsonhooks-v1"
+  ]
+  revision = "5ae89df1bf9818bc4ca9673fc2b43f81156e8098"
 
 [[projects]]
   branch = "master"
@@ -32,10 +36,22 @@
   version = "v1.38.2"
 
 [[projects]]
+  name = "github.com/google/go-querystring"
+  packages = ["query"]
+  revision = "44c6ddd0a2342c386950e880b658017258da92fc"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/google/uuid"
   packages = ["."]
   revision = "d460ce9f8df2e77fb1ba55ca87fafed96c607494"
   version = "v1.0.0"
+
+[[projects]]
+  branch = "add-api-endpoints-v2"
+  name = "github.com/johannac/AkamaiOPEN-edgegrid-golang"
+  packages = ["api-endpoints-v2"]
+  revision = "8549047eab49bc94b1470d0130acd17c233d4ca5"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -85,6 +101,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "42f86331a455e5308d93360a108beb1cc4066ca70de3c758ccbdfaa67c521c3c"
+  inputs-digest = "7f757fb36bb492fe567616de742181dad4111471f2ed14eddac7d559b0d09445"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -15,7 +15,10 @@
 package main
 
 import (
+	api "github.com/johannac/AkamaiOPEN-edgegrid-golang/api-endpoints-v2"
+	// api "github.com/akamai/AkamaiOPEN-edgegrid-golang/configdns-v1"
 	akamai "github.com/akamai/cli-common-golang"
+
 	"github.com/urfave/cli"
 )
 
@@ -33,7 +36,17 @@ var commandLocator akamai.CommandLocator = func() ([]cli.Command, error) {
 			Action:       akamai.CmdHelp,
 			BashComplete: akamai.DefaultAutoComplete,
 		},
+		commandListEndpoints,
 	}
 
 	return commands, nil
+}
+
+func initConfig(c *cli.Context) error {
+	config, err := akamai.GetEdgegridConfig(c)
+	if err != nil {
+		return err
+	}
+	api.Init(config)
+	return nil
 }
