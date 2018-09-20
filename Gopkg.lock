@@ -51,7 +51,7 @@
   branch = "add-api-endpoints-v2"
   name = "github.com/johannac/AkamaiOPEN-edgegrid-golang"
   packages = ["api-endpoints-v2"]
-  revision = "8549047eab49bc94b1470d0130acd17c233d4ca5"
+  revision = "2ecbba8294de4305756fdc689300b6c64ed8ae0b"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -66,10 +66,22 @@
   version = "v0.0.4"
 
 [[projects]]
+  name = "github.com/mattn/go-runewidth"
+  packages = ["."]
+  revision = "ce7b0b5c7b45a81508558cd1dba6bb1e4ddb51bb"
+  version = "v0.0.3"
+
+[[projects]]
   name = "github.com/mitchellh/go-homedir"
   packages = ["."]
   revision = "ae18d6b8b3205b561c79e8e5f69bff09736185f4"
   version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/olekukonko/tablewriter"
+  packages = ["."]
+  revision = "be2c049b30ccd4d3fd795d6bf7dce74e42eeedaa"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"
@@ -101,6 +113,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7f757fb36bb492fe567616de742181dad4111471f2ed14eddac7d559b0d09445"
+  inputs-digest = "330017dce23e41c4550e9f3e5df6ef88dacd2390e06bc909ce8dcb9deb100f9a"
   solver-name = "gps-cdcl"
   solver-version = 1
