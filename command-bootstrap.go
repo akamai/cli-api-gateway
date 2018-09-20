@@ -56,6 +56,11 @@ func initConfig(c *cli.Context) error {
 }
 
 func outputStruct(c *cli.Context, structToReturn interface{}, err error) error {
+	if err != nil {
+		akamai.StopSpinnerFail()
+		return cli.NewExitError(color.RedString(err.Error()), 1)
+	}
+
 	j, err := json.Marshal(structToReturn)
 	if err != nil {
 		akamai.StopSpinnerFail()
