@@ -1,0 +1,10 @@
+{
+    "apiEndPointName": "JC TEST II",
+    "description": "Provides information about membership benefits and available services.",
+    "basePath": "/api/v2",
+    "apiEndPointScheme": "http/https",
+    "consumeType": "any",
+    "groupId": 68817,
+    "apiEndPointHosts": ["api.akamaideveloper.com"],
+    "contractId": "C-1FRYVV3"
+}
