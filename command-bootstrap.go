@@ -18,8 +18,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	api "github.com/akamai/AkamaiOPEN-edgegrid-golang/api-endpoints-v2"
 	akamai "github.com/akamai/cli-common-golang"
-	api "github.com/johannac/AkamaiOPEN-edgegrid-golang/api-endpoints-v2"
 
 	"github.com/fatih/color"
 	"github.com/urfave/cli"

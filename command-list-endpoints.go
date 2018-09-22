@@ -17,8 +17,8 @@ package main
 import (
 	"fmt"
 
+	api "github.com/akamai/AkamaiOPEN-edgegrid-golang/api-endpoints-v2"
 	akamai "github.com/akamai/cli-common-golang"
-	api "github.com/johannac/AkamaiOPEN-edgegrid-golang/api-endpoints-v2"
 
 	"github.com/fatih/color"
 	"github.com/urfave/cli"
@@ -102,7 +102,7 @@ func callListEndpoints(c *cli.Context) error {
 	)
 
 	list := &api.EndpointList{}
-	err = list.GetEndpointsList(flagsListEndpoints)
+	err = list.ListEndpoints(flagsListEndpoints)
 
 	return output(c, list.APIEndPoints, err)
 }

@@ -5,11 +5,13 @@
   branch = "add-api-endpoints-v2"
   name = "github.com/akamai/AkamaiOPEN-edgegrid-golang"
   packages = [
+    "api-endpoints-v2",
     "client-v1",
     "edgegrid",
     "jsonhooks-v1"
   ]
-  revision = "5ae89df1bf9818bc4ca9673fc2b43f81156e8098"
+  revision = "5c1699b026a69f7026607110631f229beb4c64a4"
+  source = "github.com/johannac/AkamaiOPEN-edgegrid-golang"
 
 [[projects]]
   branch = "master"
@@ -48,12 +50,6 @@
   version = "v1.0.0"
 
 [[projects]]
-  branch = "add-api-endpoints-v2"
-  name = "github.com/johannac/AkamaiOPEN-edgegrid-golang"
-  packages = ["api-endpoints-v2"]
-  revision = "2ecbba8294de4305756fdc689300b6c64ed8ae0b"
-
-[[projects]]
   name = "github.com/mattn/go-colorable"
   packages = ["."]
   revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
@@ -66,22 +62,10 @@
   version = "v0.0.4"
 
 [[projects]]
-  name = "github.com/mattn/go-runewidth"
-  packages = ["."]
-  revision = "ce7b0b5c7b45a81508558cd1dba6bb1e4ddb51bb"
-  version = "v0.0.3"
-
-[[projects]]
   name = "github.com/mitchellh/go-homedir"
   packages = ["."]
   revision = "ae18d6b8b3205b561c79e8e5f69bff09736185f4"
   version = "v1.0.0"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/olekukonko/tablewriter"
-  packages = ["."]
-  revision = "be2c049b30ccd4d3fd795d6bf7dce74e42eeedaa"
 
 [[projects]]
   name = "github.com/sirupsen/logrus"
@@ -113,6 +97,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "330017dce23e41c4550e9f3e5df6ef88dacd2390e06bc909ce8dcb9deb100f9a"
+  inputs-digest = "61622dacf9e5d4705369d48a6aeaf7d1312d20be1738c0f7269a7c5e1aab3b40"
   solver-name = "gps-cdcl"
   solver-version = 1
