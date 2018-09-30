@@ -31,7 +31,7 @@ var flagsUpdate *api.UpdateEndpointFromFileOptions = &api.UpdateEndpointFromFile
 var commandImportEndpoint cli.Command = cli.Command{
 	Name:        "import",
 	ArgsUsage:   "",
-	Description: "This operation imports an API definition file and creates a new endpoint based on the file contents. You upload a Swagger 2.0 or RAML 0.8 file to import details about your API.",
+	Description: "This operation creates or updates an endpoint by importing an API definition file, in Swagger 2.0 or RAML 0.8 format.",
 	HideHelp:    true,
 	Action:      callImportEndpoint,
 	Flags: []cli.Flag{
@@ -91,7 +91,7 @@ func callImportEndpoint(c *cli.Context) error {
 	var endpoint *api.Endpoint
 
 	if flagsUpdate.EndpointId != "" {
-		ep, err := api.GetVersion(&api.GetVersionOptions{
+		endpoint, err = api.GetVersion(&api.GetVersionOptions{
 			flagsUpdate.EndpointId,
 			flagsUpdate.Version,
 		})
@@ -100,7 +100,7 @@ func callImportEndpoint(c *cli.Context) error {
 			return output(c, endpoint, err)
 		}
 
-		if api.IsActive(ep, "production") || api.IsActive(ep, "staging") {
+		if api.IsActive(endpoint, "production") || api.IsActive(endpoint, "staging") {
 			endpoint, err = api.CloneVersion(&api.CloneVersionOptions{
 				flagsUpdate.EndpointId,
 				flagsUpdate.Version,
