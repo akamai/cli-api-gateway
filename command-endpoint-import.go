@@ -16,6 +16,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	api "github.com/akamai/AkamaiOPEN-edgegrid-golang/api-endpoints-v2"
 	akamai "github.com/akamai/cli-common-golang"
@@ -24,44 +25,43 @@ import (
 	"github.com/urfave/cli"
 )
 
-var flagsImportEndpoint *api.ImportEndpointOptions = &api.ImportEndpointOptions{}
+var flagsCreate *api.CreateEndpointFromFileOptions = &api.CreateEndpointFromFileOptions{}
+var flagsUpdate *api.UpdateEndpointFromFileOptions = &api.UpdateEndpointFromFileOptions{}
 
 var commandImportEndpoint cli.Command = cli.Command{
 	Name:        "import",
 	ArgsUsage:   "",
-	Description: "This operation imports an API definition file and creates a new endpoint based on the file contents. You either upload or specify a URL to a Swagger 2.0 or RAML 0.8 file to import details about your API.",
+	Description: "This operation imports an API definition file and creates a new endpoint based on the file contents. You upload a Swagger 2.0 or RAML 0.8 file to import details about your API.",
 	HideHelp:    true,
 	Action:      callImportEndpoint,
 	Flags: []cli.Flag{
 		cli.StringFlag{
-			Name:        "format",
-			Usage:       "Format of the input file, either 'raml', or 'swagger'",
-			Destination: &flagsImportEndpoint.Format,
+			Name:  "format",
+			Usage: "Format of the input file, either 'raml', or 'swagger'",
 		},
 		cli.StringFlag{
-			Name:        "file",
-			Usage:       "Absolute path to the file containing the API definition.",
-			Destination: &flagsImportEndpoint.File,
+			Name:  "file",
+			Usage: "Absolute path to the file containing the API definition.",
 		},
 		cli.StringFlag{
 			Name:        "endpoint",
 			Usage:       "The unique identifier for the endpoint.",
-			Destination: &flagsImportEndpoint.EndpointId,
+			Destination: &flagsUpdate.EndpointId,
 		},
 		cli.StringFlag{
 			Name:        "version",
 			Usage:       "The endpoint version number.",
-			Destination: &flagsImportEndpoint.Version,
+			Destination: &flagsUpdate.Version,
 		},
 		cli.StringFlag{
 			Name:        "contract",
 			Usage:       "The unique identifier for the contract under which to provision the endpoint.",
-			Destination: &flagsImportEndpoint.ContractId,
+			Destination: &flagsCreate.ContractId,
 		},
 		cli.StringFlag{
 			Name:        "group",
 			Usage:       "The unique identifier for the group under which to provision the endpoint.",
-			Destination: &flagsImportEndpoint.GroupId,
+			Destination: &flagsCreate.GroupId,
 		},
 	},
 }
@@ -77,11 +77,47 @@ func callImportEndpoint(c *cli.Context) error {
 		fmt.Sprintf("Importing API endpoint...... [%s]", color.GreenString("OK")),
 	)
 
-	if flagsImportEndpoint.File == "" && hasSTDIN() == true {
+	flagsCreate.File = c.String("file")
+	flagsUpdate.File = c.String("file")
+	flagsCreate.Format = c.String("format")
+	flagsUpdate.Format = c.String("format")
+
+	if c.String("file") == "" && hasSTDIN() == true {
 		// TODO: windows support?
-		flagsImportEndpoint.File = "/dev/stdin"
+		flagsCreate.File = "/dev/stdin"
+		flagsUpdate.File = "/dev/stdin"
 	}
 
-	endpoint, err := api.ImportEndpoint(flagsImportEndpoint)
+	var endpoint *api.Endpoint
+
+	if flagsUpdate.EndpointId != "" {
+		ep, err := api.GetVersion(&api.GetVersionOptions{
+			flagsUpdate.EndpointId,
+			flagsUpdate.Version,
+		})
+
+		if err != nil {
+			return output(c, endpoint, err)
+		}
+
+		if api.IsActive(ep, "production") || api.IsActive(ep, "staging") {
+			endpoint, err = api.CloneVersion(&api.CloneVersionOptions{
+				flagsUpdate.EndpointId,
+				flagsUpdate.Version,
+			})
+
+			if err != nil {
+				return output(c, endpoint, err)
+			}
+
+			flagsUpdate.EndpointId = strconv.Itoa(endpoint.APIEndPointID)
+			flagsUpdate.Version = strconv.Itoa(endpoint.VersionNumber)
+		}
+
+		endpoint, err = api.UpdateEndpointFromFile(flagsUpdate)
+	} else {
+		endpoint, err = api.CreateEndpointFromFile(flagsCreate)
+	}
+
 	return output(c, endpoint, err)
 }
