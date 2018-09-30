@@ -24,49 +24,64 @@ import (
 	"github.com/urfave/cli"
 )
 
-var flagsCreateEndpoint *api.CreateEndpointOptions = &api.CreateEndpointOptions{}
+var flagsImportEndpoint *api.ImportEndpointOptions = &api.ImportEndpointOptions{}
 
-var commandCreateEndpoint cli.Command = cli.Command{
-	Name:        "create-endpoint",
+var commandImportEndpoint cli.Command = cli.Command{
+	Name:        "import",
 	ArgsUsage:   "",
 	Description: "This operation imports an API definition file and creates a new endpoint based on the file contents. You either upload or specify a URL to a Swagger 2.0 or RAML 0.8 file to import details about your API.",
 	HideHelp:    true,
-	Action:      callCreateEndpoint,
+	Action:      callImportEndpoint,
 	Flags: []cli.Flag{
 		cli.StringFlag{
 			Name:        "format",
-			Usage:       "Format of the input file, either 'json', 'raml', or 'swagger'",
-			Destination: &flagsCreateEndpoint.Format,
+			Usage:       "Format of the input file, either 'raml', or 'swagger'",
+			Destination: &flagsImportEndpoint.Format,
 		},
 		cli.StringFlag{
 			Name:        "file",
 			Usage:       "Absolute path to the file containing the API definition.",
-			Destination: &flagsCreateEndpoint.ImportFile,
+			Destination: &flagsImportEndpoint.File,
+		},
+		cli.StringFlag{
+			Name:        "endpoint",
+			Usage:       "The unique identifier for the endpoint.",
+			Destination: &flagsImportEndpoint.EndpointId,
+		},
+		cli.StringFlag{
+			Name:        "version",
+			Usage:       "The endpoint version number.",
+			Destination: &flagsImportEndpoint.Version,
 		},
 		cli.StringFlag{
 			Name:        "contract",
-			Usage:       "[Swagger or RAML] The unique identifier for the contract under which to provision the endpoint.",
-			Destination: &flagsCreateEndpoint.ContractId,
+			Usage:       "The unique identifier for the contract under which to provision the endpoint.",
+			Destination: &flagsImportEndpoint.ContractId,
 		},
 		cli.StringFlag{
 			Name:        "group",
-			Usage:       "[Swagger or RAML] The unique identifier for the group under which to provision the endpoint.",
-			Destination: &flagsCreateEndpoint.GroupId,
+			Usage:       "The unique identifier for the group under which to provision the endpoint.",
+			Destination: &flagsImportEndpoint.GroupId,
 		},
 	},
 }
 
-func callCreateEndpoint(c *cli.Context) error {
+func callImportEndpoint(c *cli.Context) error {
 	err := initConfig(c)
 	if err != nil {
 		return cli.NewExitError(color.RedString(err.Error()), 1)
 	}
 
 	akamai.StartSpinner(
-		"Creating new API endpoint...",
-		fmt.Sprintf("Creating new API endpoint...... [%s]", color.GreenString("OK")),
+		"Importing API endpoint...",
+		fmt.Sprintf("Importing API endpoint...... [%s]", color.GreenString("OK")),
 	)
 
-	endpoint, err := api.CreateEndpoint(flagsCreateEndpoint)
+	if flagsImportEndpoint.File == "" && hasSTDIN() == true {
+		// TODO: windows support?
+		flagsImportEndpoint.File = "/dev/stdin"
+	}
+
+	endpoint, err := api.ImportEndpoint(flagsImportEndpoint)
 	return output(c, endpoint, err)
 }

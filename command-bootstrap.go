@@ -17,6 +17,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 
 	api "github.com/akamai/AkamaiOPEN-edgegrid-golang/api-endpoints-v2"
 	akamai "github.com/akamai/cli-common-golang"
@@ -71,4 +72,17 @@ func output(c *cli.Context, toReturn interface{}, err error) error {
 	akamai.StopSpinnerOk()
 	fmt.Fprintln(c.App.Writer, string(returnJSON))
 	return nil
+}
+
+func hasSTDIN() bool {
+	stat, err := os.Stdin.Stat()
+	if err != nil {
+		return false
+	}
+
+	if (stat.Mode() & os.ModeCharDevice) == 0 {
+		return true
+	}
+
+	return false
 }

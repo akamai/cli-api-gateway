@@ -24,7 +24,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-var flagsDeactivateEndpoint *api.DeactivateEndpointOptions = &api.ActivateEndpointOptions{}
+var flagsDeactivateEndpoint *api.DeactivateEndpointOptions = &api.DeactivateEndpointOptions{}
 var flagsRemoveEndpoint *api.RemoveEndpointOptions = &api.RemoveEndpointOptions{}
 
 var commandRemoveEndpoint cli.Command = cli.Command{
