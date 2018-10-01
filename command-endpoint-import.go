@@ -88,6 +88,10 @@ func callImportEndpoint(c *cli.Context) error {
 		flagsUpdate.File = "/dev/stdin"
 	}
 
+	if c.String("version") == "" {
+		flagsUpdate.Version = "latest"
+	}
+
 	var endpoint *api.Endpoint
 
 	if flagsUpdate.EndpointId != "" {

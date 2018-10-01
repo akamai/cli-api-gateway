@@ -82,6 +82,10 @@ func callUpdateEndpoint(c *cli.Context) error {
 		fmt.Sprintf("Updating API endpoint...... [%s]", color.GreenString("OK")),
 	)
 
+	if flagsUpdateEndpoint.Version == "" {
+		flagsUpdateEndpoint.Version = "latest"
+	}
+
 	endpoint, err := api.GetVersion(&api.GetVersionOptions{
 		flagsUpdateEndpoint.EndpointId,
 		flagsUpdateEndpoint.Version,
