@@ -20,6 +20,7 @@ import (
 	"os"
 
 	api "github.com/akamai/AkamaiOPEN-edgegrid-golang/api-endpoints-v2"
+	api2 "github.com/akamai/AkamaiOPEN-edgegrid-golang/apikey-manager-v1"
 	akamai "github.com/akamai/cli-common-golang"
 
 	"github.com/fatih/color"
@@ -50,6 +51,7 @@ var commandLocator akamai.CommandLocator = func() ([]cli.Command, error) {
 		commandListResources,
 		commandActivateEndpoint,
 		commandRemoveEndpoint,
+		commandListKeyCollections,
 	}
 
 	return commands, nil
@@ -61,6 +63,7 @@ func initConfig(c *cli.Context) error {
 		return err
 	}
 	api.Init(config)
+	api2.Init(config)
 	return nil
 }
 
