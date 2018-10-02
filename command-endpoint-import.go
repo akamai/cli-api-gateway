@@ -16,7 +16,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 
 	api "github.com/akamai/AkamaiOPEN-edgegrid-golang/api-endpoints-v2"
 	akamai "github.com/akamai/cli-common-golang"
@@ -43,12 +42,12 @@ var commandImportEndpoint cli.Command = cli.Command{
 			Name:  "file",
 			Usage: "Absolute path to the file containing the API definition.",
 		},
-		cli.StringFlag{
+		cli.IntFlag{
 			Name:        "endpoint",
 			Usage:       "The unique identifier for the endpoint.",
 			Destination: &flagsUpdate.EndpointId,
 		},
-		cli.StringFlag{
+		cli.IntFlag{
 			Name:        "version",
 			Usage:       "The endpoint version number.",
 			Destination: &flagsUpdate.Version,
@@ -88,13 +87,9 @@ func callImportEndpoint(c *cli.Context) error {
 		flagsUpdate.File = "/dev/stdin"
 	}
 
-	if c.String("version") == "" {
-		flagsUpdate.Version = "latest"
-	}
-
 	var endpoint *api.Endpoint
 
-	if flagsUpdate.EndpointId != "" {
+	if flagsUpdate.EndpointId <= 0 {
 		endpoint, err = api.GetVersion(&api.GetVersionOptions{
 			flagsUpdate.EndpointId,
 			flagsUpdate.Version,
@@ -114,8 +109,8 @@ func callImportEndpoint(c *cli.Context) error {
 				return output(c, endpoint, err)
 			}
 
-			flagsUpdate.EndpointId = strconv.Itoa(endpoint.APIEndPointID)
-			flagsUpdate.Version = strconv.Itoa(endpoint.VersionNumber)
+			flagsUpdate.EndpointId = endpoint.APIEndPointID
+			flagsUpdate.Version = endpoint.VersionNumber
 		}
 
 		endpoint, err = api.UpdateEndpointFromFile(flagsUpdate)

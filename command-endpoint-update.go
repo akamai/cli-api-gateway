@@ -16,7 +16,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 
 	api "github.com/akamai/AkamaiOPEN-edgegrid-golang/api-endpoints-v2"
 	akamai "github.com/akamai/cli-common-golang"
@@ -25,7 +24,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-var flagsUpdateEndpoint *api.ModifyVersionOptions = &api.ModifyVersionOptions{}
+var flagsUpdateEndpoint *api.Endpoint = &api.Endpoint{}
 
 var commandUpdateEndpoint cli.Command = cli.Command{
 	Name:        "update",
@@ -34,20 +33,20 @@ var commandUpdateEndpoint cli.Command = cli.Command{
 	HideHelp:    true,
 	Action:      callUpdateEndpoint,
 	Flags: []cli.Flag{
-		cli.StringFlag{
+		cli.IntFlag{
 			Name:        "endpoint",
 			Usage:       "The unique identifier for the endpoint.",
-			Destination: &flagsUpdateEndpoint.EndpointId,
+			Destination: &flagsUpdateEndpoint.APIEndPointID,
 		},
-		cli.StringFlag{
+		cli.IntFlag{
 			Name:        "version",
 			Usage:       "The endpoint version number.",
-			Destination: &flagsUpdateEndpoint.Version,
+			Destination: &flagsUpdateEndpoint.VersionNumber,
 		},
 		cli.StringFlag{
 			Name:        "name",
 			Usage:       "The name of the endpoint. Must be unique in the account.",
-			Destination: &flagsUpdateEndpoint.Name,
+			Destination: &flagsUpdateEndpoint.APIEndPointName,
 		},
 		cli.StringFlag{
 			Name:        "description",
@@ -66,7 +65,7 @@ var commandUpdateEndpoint cli.Command = cli.Command{
 		cli.StringFlag{
 			Name:        "scheme",
 			Usage:       "The URL scheme to which the endpoint may respond, either http, https, or http/https for both.",
-			Destination: &flagsUpdateEndpoint.Scheme,
+			Destination: &flagsUpdateEndpoint.APIEndPointScheme,
 		},
 	},
 }
@@ -82,13 +81,9 @@ func callUpdateEndpoint(c *cli.Context) error {
 		fmt.Sprintf("Updating API endpoint...... [%s]", color.GreenString("OK")),
 	)
 
-	if flagsUpdateEndpoint.Version == "" {
-		flagsUpdateEndpoint.Version = "latest"
-	}
-
 	endpoint, err := api.GetVersion(&api.GetVersionOptions{
-		flagsUpdateEndpoint.EndpointId,
-		flagsUpdateEndpoint.Version,
+		flagsUpdateEndpoint.APIEndPointID,
+		flagsUpdateEndpoint.VersionNumber,
 	})
 
 	if err != nil {
@@ -97,19 +92,19 @@ func callUpdateEndpoint(c *cli.Context) error {
 
 	if api.IsActive(endpoint, "production") || api.IsActive(endpoint, "staging") {
 		endpoint, err = api.CloneVersion(&api.CloneVersionOptions{
-			flagsUpdateEndpoint.EndpointId,
-			flagsUpdateEndpoint.Version,
+			flagsUpdateEndpoint.APIEndPointID,
+			flagsUpdateEndpoint.VersionNumber,
 		})
 
 		if err != nil {
 			return output(c, endpoint, err)
 		}
 
-		flagsUpdateEndpoint.EndpointId = strconv.Itoa(endpoint.APIEndPointID)
-		flagsUpdateEndpoint.Version = strconv.Itoa(endpoint.VersionNumber)
+		flagsUpdateEndpoint.APIEndPointID = endpoint.APIEndPointID
+		flagsUpdateEndpoint.VersionNumber = endpoint.VersionNumber
 	}
 
-	flagsUpdateEndpoint.Hostnames = c.StringSlice("hostname")
+	flagsUpdateEndpoint.APIEndPointHosts = c.StringSlice("hostname")
 
 	endpoint, err = api.ModifyVersion(flagsUpdateEndpoint)
 	return output(c, endpoint, err)
