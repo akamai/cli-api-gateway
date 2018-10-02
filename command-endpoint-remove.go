@@ -24,37 +24,16 @@ import (
 	"github.com/urfave/cli"
 )
 
-var flagsRemoveEndpoint *api.RemoveVersionOptions = &api.RemoveVersionOptions{}
-
 var commandRemoveEndpoint cli.Command = cli.Command{
 	Name:        "remove-endpoint",
 	ArgsUsage:   "",
-	Description: "Remove an API that has been onboarded to Akamai.",
+	Description: "Remove an API endpoint that has been onboarded to Akamai.",
 	HideHelp:    true,
 	Action:      callRemoveEndpoint,
 	Flags: []cli.Flag{
 		cli.IntFlag{
-			Name:        "endpoint",
-			Usage:       "The unique identifier for the endpoint.",
-			Destination: &flagsActivateEndpoint.APIEndPointId,
-		},
-		cli.IntFlag{
-			Name:        "version",
-			Usage:       "The endpoint version number.",
-			Destination: &flagsActivateEndpoint.VersionNumber,
-		},
-		cli.StringSliceFlag{
-			Name:  "network",
-			Usage: "[Staging and/or Production] Which network to remove the endpoint on, pass multiple flags if needed.",
-		},
-		cli.StringSliceFlag{
-			Name:  "notificationRecipient",
-			Usage: "Email address(es) to notify when the removal is complete, pass multiple flags if needed.",
-		},
-		cli.StringFlag{
-			Name:        "notes",
-			Usage:       "Comments on the removal",
-			Destination: &flagsActivation.Notes,
+			Name:  "endpoint",
+			Usage: "The unique identifier for the endpoint.",
 		},
 	},
 }
@@ -70,9 +49,6 @@ func callRemoveEndpoint(c *cli.Context) error {
 		fmt.Sprintf("Removing API endpoint...... [%s]", color.GreenString("OK")),
 	)
 
-	flagsActivation.NotificationRecipients = c.StringSlice("notificationRecipient")
-	flagsActivation.Networks = c.StringSlice("network")
-
-	activation, err := api.ActivateEndpoint(flagsActivateEndpoint, flagsActivation)
-	return output(c, activation, err)
+	endpoint, err := api.RemoveEndpoint(c.Int("endpoint"))
+	return output(c, endpoint, err)
 }
