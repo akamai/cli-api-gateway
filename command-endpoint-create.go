@@ -52,7 +52,7 @@ var commandCreateEndpoint cli.Command = cli.Command{
 			Usage:       "The unique identifier for the contract under which to provision the endpoint.",
 			Destination: &flagsCreateEndpoint.ContractId,
 		},
-		cli.IntFlag{
+		cli.StringFlag{
 			Name:        "group",
 			Usage:       "The unique identifier for the group under which to provision the endpoint.",
 			Destination: &flagsCreateEndpoint.GroupId,
