@@ -56,6 +56,7 @@ var commandLocator akamai.CommandLocator = func() ([]cli.Command, error) {
 		commandUpdateCollectionAcl,
 		commandAddCollectionKey,
 		commandKeysImport,
+		commandRevokeKey,
 	}
 
 	return commands, nil
