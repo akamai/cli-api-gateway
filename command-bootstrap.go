@@ -45,6 +45,7 @@ var commandLocator akamai.CommandLocator = func() ([]cli.Command, error) {
 		commandImportEndpoint,
 		commandUpdateEndpoint,
 		commandApiKeys,
+		commandConstraints,
 		// commandActivateEndpoint,
 	}
 
