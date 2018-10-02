@@ -40,13 +40,14 @@ var commandLocator akamai.CommandLocator = func() ([]cli.Command, error) {
 			Action:       akamai.CmdHelp,
 			BashComplete: akamai.DefaultAutoComplete,
 		},
-		commandListEndpoints,
 		commandCreateEndpoint,
 		commandImportEndpoint,
 		commandUpdateEndpoint,
 		commandApiKeys,
 		commandConstraints,
 		commandStatus,
+		commandListEndpoints,
+		commandListResources,
 		// commandActivateEndpoint,
 	}
 
