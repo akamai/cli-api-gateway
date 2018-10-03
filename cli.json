@@ -1,0 +1,26 @@
+{
+  "name": "akamai/api-gateway",
+  "requirements": {
+    "go": "1.10.0"
+  },
+  "commands": [
+    {
+      "name": "api-gateway",
+      "version": "0.1.0",
+      "description": "",
+      "auto-complete": true
+    },
+    {
+      "name": "api-keys",
+      "version": "0.1.0",
+      "description": "",
+      "auto-complete": true
+    },
+    {
+      "name": "api-security",
+      "version": "0.1.0",
+      "description": "",
+      "auto-complete": true
+    }
+  ]
+}
