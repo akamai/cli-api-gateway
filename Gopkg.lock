@@ -6,11 +6,13 @@
   name = "github.com/akamai/AkamaiOPEN-edgegrid-golang"
   packages = [
     "api-endpoints-v2",
+    "apikey-manager-v1",
     "client-v1",
+    "configdns-v1",
     "edgegrid",
     "jsonhooks-v1"
   ]
-  revision = "8bd2bfae3e0b0914de7b4a3bae3b049e5ff5171f"
+  revision = "658f32f1a8b5da17e3072174a37623061d199bf6"
   source = "github.com/johannac/AkamaiOPEN-edgegrid-golang"
 
 [[projects]]
