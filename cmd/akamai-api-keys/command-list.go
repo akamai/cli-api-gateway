@@ -25,7 +25,7 @@ import (
 )
 
 var commandListKeyCollections cli.Command = cli.Command{
-	Name:        "list-key-collections",
+	Name:        "list-collections",
 	ArgsUsage:   "",
 	Description: "Retrieve a list of all key collections configured at Akamai.",
 	HideHelp:    true,

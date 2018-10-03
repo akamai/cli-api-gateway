@@ -27,9 +27,9 @@ import (
 var flagsCreateCollection *api.CreateCollectionOptions = &api.CreateCollectionOptions{}
 
 var commandCreateCollection cli.Command = cli.Command{
-	Name:        "create-key-collection",
+	Name:        "add-collection",
 	ArgsUsage:   "",
-	Description: "This operation creates an empty API endpoint.",
+	Description: "This operation creates a new collection.",
 	HideHelp:    true,
 	Action:      callCreateCollection,
 	Flags: []cli.Flag{

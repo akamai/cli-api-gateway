@@ -28,7 +28,7 @@ var flagsActivateEndpoint *api.ActivateEndpointOptions = &api.ActivateEndpointOp
 var flagsActivation *api.Activation = &api.Activation{}
 
 var commandActivateEndpoint cli.Command = cli.Command{
-	Name:        "activate-endpoint",
+	Name:        "activate",
 	ArgsUsage:   "",
 	Description: "Activate an API that has been onboarded to Akamai.",
 	HideHelp:    true,

@@ -25,7 +25,7 @@ import (
 )
 
 var commandRemoveEndpoint cli.Command = cli.Command{
-	Name:        "remove-endpoint",
+	Name:        "remove",
 	ArgsUsage:   "",
 	Description: "Remove an API endpoint that has been onboarded to Akamai.",
 	HideHelp:    true,

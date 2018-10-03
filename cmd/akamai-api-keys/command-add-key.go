@@ -24,32 +24,44 @@ import (
 	"github.com/urfave/cli"
 )
 
-var commandRevokeKey cli.Command = cli.Command{
-	Name:        "revoke-key",
+var commandAddCollectionKey cli.Command = cli.Command{
+	Name:        "add-key",
 	ArgsUsage:   "",
-	Description: "This operation revokes a key.",
+	Description: "This operation adds a new key to a collection.",
 	HideHelp:    true,
-	Action:      callRevokeKey,
+	Action:      callAddCollectionKey,
 	Flags: []cli.Flag{
 		cli.IntFlag{
+			Name:  "collection",
+			Usage: "The collection ID to modify.",
+		},
+		cli.StringFlag{
 			Name:  "key",
-			Usage: "The key to revoke.",
+			Usage: "The name of the key.",
+		},
+		cli.StringFlag{
+			Name:  "value",
+			Usage: "The value of the key.",
 		},
 	},
 }
 
-func callRevokeKey(c *cli.Context) error {
+func callAddCollectionKey(c *cli.Context) error {
 	err := initConfig(c)
 	if err != nil {
 		return cli.NewExitError(color.RedString(err.Error()), 1)
 	}
 
 	akamai.StartSpinner(
-		"Revoking key...",
-		fmt.Sprintf("Revoking key...... [%s]", color.GreenString("OK")),
+		"Adding key to collection...",
+		fmt.Sprintf("Adding key to collection...... [%s]", color.GreenString("OK")),
 	)
 
-	key, err := api.RevokeKey(c.Int("key"))
+	collection, err := api.CollectionAddKey(
+		c.Int("collection"),
+		c.String("name"),
+		c.String("value"),
+	)
 
-	return output(c, key, err)
+	return output(c, collection, err)
 }

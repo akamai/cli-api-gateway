@@ -24,39 +24,29 @@ import (
 	"github.com/urfave/cli"
 )
 
-var flagsUpdateCollectionAcl *api.CreateCollectionOptions = &api.CreateCollectionOptions{}
-
-var commandUpdateCollectionAcl cli.Command = cli.Command{
-	Name:        "update-collection-acl",
+var commandAclAllow cli.Command = cli.Command{
+	Name:        "acl-allow",
 	ArgsUsage:   "",
-	Description: "This operation add or removed endpoint from the key collection ACL",
+	Description: "This operation adds/allows an endpoint on the key collection ACL",
 	HideHelp:    true,
-	Action:      callUpdateCollectionAcl,
+	Action:      callAclAllow,
 	Flags: []cli.Flag{
 		cli.IntFlag{
 			Name:  "collection",
 			Usage: "The collection ID to modify.",
 		},
-		cli.BoolFlag{
-			Name:  "allow",
-			Usage: "The endpoints/resources should be added/allowed on the ACL",
-		},
-		cli.BoolFlag{
-			Name:  "deny",
-			Usage: "The endpoints/resources should be removed/denied on the ACL",
-		},
 		cli.IntSliceFlag{
 			Name:  "endpoint",
-			Usage: "The endpoint ID to add/remove from the ACL, multiples allowed",
+			Usage: "The endpoint ID to add to the ACL, multiples allowed",
 		},
 		cli.IntSliceFlag{
 			Name:  "resource",
-			Usage: "The resource ID to add/remove from the ACL, multiples allowed",
+			Usage: "The resource ID to add to the ACL, multiples allowed",
 		},
 	},
 }
 
-func callUpdateCollectionAcl(c *cli.Context) error {
+func callAclAllow(c *cli.Context) error {
 	err := initConfig(c)
 	if err != nil {
 		return cli.NewExitError(color.RedString(err.Error()), 1)
@@ -77,15 +67,7 @@ func callUpdateCollectionAcl(c *cli.Context) error {
 		acl = append(acl, fmt.Sprintf("RESOURCE-%d", r))
 	}
 
-	var collection *api.Collection
-
-	if c.Bool("allow") {
-		collection, err = api.CollectionAclAllow(c.Int("collection"), acl)
-	}
-
-	if c.Bool("deny") {
-		collection, err = api.CollectionAclDeny(c.Int("collection"), acl)
-	}
+	collection, err := api.CollectionAclAllow(c.Int("collection"), acl)
 
 	return output(c, collection, err)
 }
