@@ -8,7 +8,6 @@
     "api-endpoints-v2",
     "apikey-manager-v1",
     "client-v1",
-    "configdns-v1",
     "edgegrid",
     "jsonhooks-v1"
   ]
@@ -99,6 +98,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "61622dacf9e5d4705369d48a6aeaf7d1312d20be1738c0f7269a7c5e1aab3b40"
+  inputs-digest = "9e60ee5d484f425c7bd82ba3f7e1d3090e4992d82927ab5c91863efe67af4f40"
   solver-name = "gps-cdcl"
   solver-version = 1
