@@ -57,7 +57,7 @@ var commandImportEndpoint cli.Command = cli.Command{
 			Usage:       "The unique identifier for the contract under which to provision the endpoint.",
 			Destination: &flagsCreate.ContractId,
 		},
-		cli.StringFlag{
+		cli.IntFlag{
 			Name:        "group",
 			Usage:       "The unique identifier for the group under which to provision the endpoint.",
 			Destination: &flagsCreate.GroupId,
