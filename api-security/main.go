@@ -29,7 +29,7 @@ func main() {
 		"A CLI for API Gateway Security",
 		"Manage your API traffic with API Gateway",
 		VERSION,
-		"api-gateway",
+		"default",
 		commandLocator,
 	)
 
