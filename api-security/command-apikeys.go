@@ -79,19 +79,24 @@ func callApiKeys(c *cli.Context) error {
 	}
 
 	if c.Bool("enable") {
-		endpoint.SecurityScheme.SecuritySchemeType = "apikey"
-		endpoint.SecurityScheme.SecuritySchemeDetail.APIKeyLocation = c.String("location")
-		endpoint.SecurityScheme.SecuritySchemeDetail.APIKeyName = c.String("name")
-
+		ss := &api.SecurityScheme{
+			SecuritySchemeType: "apikey",
+			SecuritySchemeDetail: &api.SecuritySchemeDetail{
+				APIKeyLocation: c.String("location"),
+				APIKeyName:     c.String("name"),
+			},
+		}
+		endpoint.SecurityScheme = ss
 		endpoint, err = api.ModifyVersion(endpoint)
 		return output(c, endpoint, err)
 	}
 
 	if c.Bool("disable") {
-		endpoint.SecurityScheme.SecuritySchemeType = ""
-		endpoint.SecurityScheme.SecuritySchemeDetail.APIKeyLocation = ""
-		endpoint.SecurityScheme.SecuritySchemeDetail.APIKeyName = ""
-
+		ss := &api.SecurityScheme{
+			SecuritySchemeType:   "",
+			SecuritySchemeDetail: &api.SecuritySchemeDetail{},
+		}
+		endpoint.SecurityScheme = ss
 		endpoint, err = api.ModifyVersion(endpoint)
 		return output(c, endpoint, err)
 	}
