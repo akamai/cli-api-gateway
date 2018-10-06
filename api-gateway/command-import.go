@@ -89,7 +89,7 @@ func callImportEndpoint(c *cli.Context) error {
 
 	var endpoint *api.Endpoint
 
-	if flagsUpdate.EndpointId <= 0 {
+	if flagsUpdate.EndpointId > 0 {
 		endpoint, err = api.GetVersion(&api.GetVersionOptions{
 			flagsUpdate.EndpointId,
 			flagsUpdate.Version,
@@ -98,6 +98,9 @@ func callImportEndpoint(c *cli.Context) error {
 		if err != nil {
 			return output(c, endpoint, err)
 		}
+
+		flagsUpdate.EndpointId = endpoint.APIEndPointID
+		flagsUpdate.Version = endpoint.VersionNumber
 
 		if api.IsActive(endpoint, "production") || api.IsActive(endpoint, "staging") {
 			endpoint, err = api.CloneVersion(&api.CloneVersionOptions{
