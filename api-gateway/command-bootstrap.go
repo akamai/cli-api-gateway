@@ -24,6 +24,7 @@ import (
 	akamai "github.com/akamai/cli-common-golang"
 
 	"github.com/fatih/color"
+	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli"
 )
 
@@ -77,6 +78,17 @@ func output(c *cli.Context, toReturn interface{}, err error) error {
 
 	akamai.StopSpinnerOk()
 	fmt.Fprintln(c.App.Writer, string(returnJSON))
+	return nil
+}
+
+func outputTable(c *cli.Context, toReturn *tablewriter.Table, err error) error {
+	if err != nil {
+		akamai.StopSpinnerFail()
+		return cli.NewExitError(color.RedString(err.Error()), 1)
+	}
+
+	akamai.StopSpinnerOk()
+	toReturn.Render()
 	return nil
 }
 
