@@ -11,7 +11,7 @@
     "edgegrid",
     "jsonhooks-v1"
   ]
-  revision = "d28c4f313087a69a41bccc95da3e34f79aff94d2"
+  revision = "d41fedc72d53aa7a49d7477308926168df573c45"
   source = "github.com/johannac/AkamaiOPEN-edgegrid-golang"
 
 [[projects]]
