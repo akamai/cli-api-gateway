@@ -78,6 +78,17 @@ func callApiKeys(c *cli.Context) error {
 		return output(c, endpoint, err)
 	}
 
+	if api.IsActive(endpoint, "production") || api.IsActive(endpoint, "staging") {
+		endpoint, err = api.CloneVersion(&api.CloneVersionOptions{
+			endpoint.APIEndPointID,
+			endpoint.VersionNumber,
+		})
+
+		if err != nil {
+			return output(c, endpoint, err)
+		}
+	}
+
 	if c.Bool("enable") {
 		ss := &api.SecurityScheme{
 			SecuritySchemeType: "apikey",
