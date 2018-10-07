@@ -16,6 +16,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	api "github.com/akamai/AkamaiOPEN-edgegrid-golang/api-endpoints-v2"
 	akamai "github.com/akamai/cli-common-golang"
@@ -25,7 +26,7 @@ import (
 )
 
 var commandPrivacy cli.Command = cli.Command{
-	Name:        "privacy",
+	Name:        "privacy-add",
 	ArgsUsage:   "",
 	Description: "Make an endpoint|resource|method public or private",
 	HideHelp:    true,
@@ -46,6 +47,39 @@ var commandPrivacy cli.Command = cli.Command{
 		cli.BoolFlag{
 			Name:  "private",
 			Usage: "Make this endpoint private.",
+		},
+		cli.StringFlag{
+			Name:  "resource",
+			Usage: "The resource name to apply the settings to.",
+		},
+
+		cli.BoolFlag{
+			Name:  "get",
+			Usage: "Apply to GET requests.",
+		},
+		cli.BoolFlag{
+			Name:  "post",
+			Usage: "Apply to POST requests.",
+		},
+		cli.BoolFlag{
+			Name:  "put",
+			Usage: "Apply to PUT requests.",
+		},
+		cli.BoolFlag{
+			Name:  "delete",
+			Usage: "Apply to DELETE requests.",
+		},
+		cli.BoolFlag{
+			Name:  "patch",
+			Usage: "Apply to PATCH requests.",
+		},
+		cli.BoolFlag{
+			Name:  "head",
+			Usage: "Apply to HEAD requests.",
+		},
+		cli.BoolFlag{
+			Name:  "options",
+			Usage: "Apply to OPTIONS requests.",
 		},
 	},
 }
@@ -78,9 +112,74 @@ func callPrivacy(c *cli.Context) error {
 		return output(c, nil, err)
 	}
 
-	settings.Public = c.Bool("public")
+	if c.String("resource") != "" {
+
+		for i, resource := range settings.Resources {
+			if c.String("resource") == resource.Path {
+				methods := getMethodsPassed(c)
+				if c.Bool("public") {
+					methods = merge(methods, resource.Methods)
+				} else {
+					methods = remove(methods, resource.Methods)
+				}
+				resource.Methods = methods
+				resource.Public = c.Bool("public")
+				settings.Resources[i] = resource
+			}
+		}
+	} else {
+		settings.Public = c.Bool("public")
+	}
 
 	_, err = api.UpdateAPIPrivacySettings(c.Int("endpoint"), version, settings)
 
-	return output(c, nil, err)
+	return output(c, settings, err)
+}
+
+func getMethodsPassed(c *cli.Context) []string {
+	allMethods := []string{
+		"HEAD",
+		"DELETE",
+		"POST",
+		"GET",
+		"OPTIONS",
+		"PUT",
+		"PATCH",
+	}
+	methods := []string{}
+
+	for _, m := range allMethods {
+		if c.Bool(strings.ToLower(m)) {
+			methods = append(methods, m)
+		}
+	}
+
+	return methods
+}
+
+func merge(s1, s2 []string) []string {
+	input := append(s1, s2...)
+	merged := make([]string, 0, len(input))
+	seen := make(map[string]bool)
+
+	for _, val := range input {
+		if _, ok := seen[val]; !ok {
+			seen[val] = true
+			merged = append(merged, val)
+		}
+	}
+
+	return merged
+}
+
+func remove(s1, s2 []string) []string {
+	final := []string{}
+	for i, v2 := range s2 {
+		for _, v1 := range s1 {
+			if v1 == v2 {
+				final = append(s1[:i], s2[i+1:]...)
+			}
+		}
+	}
+	return final
 }
