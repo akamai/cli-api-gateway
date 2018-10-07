@@ -49,6 +49,7 @@ var commandLocator akamai.CommandLocator = func() ([]cli.Command, error) {
 		commandListResources,
 		commandActivateEndpoint,
 		commandRemoveEndpoint,
+		commandPrivacy,
 	}
 
 	return commands, nil
@@ -70,14 +71,18 @@ func output(c *cli.Context, toReturn interface{}, err error) error {
 		return cli.NewExitError(color.RedString(err.Error()), 1)
 	}
 
-	returnJSON, err := json.MarshalIndent(toReturn, "", "  ")
-	if err != nil {
-		akamai.StopSpinnerFail()
-		return cli.NewExitError(color.RedString(err.Error()), 1)
+	akamai.StopSpinnerOk()
+
+	if toReturn != nil {
+		returnJSON, err := json.MarshalIndent(toReturn, "", "  ")
+		if err != nil {
+			akamai.StopSpinnerFail()
+			return cli.NewExitError(color.RedString(err.Error()), 1)
+		}
+
+		fmt.Fprintln(c.App.Writer, string(returnJSON))
 	}
 
-	akamai.StopSpinnerOk()
-	fmt.Fprintln(c.App.Writer, string(returnJSON))
 	return nil
 }
 
