@@ -47,6 +47,10 @@ var commandAclEndpoint cli.Command = cli.Command{
 			Name:  "deny",
 			Usage: "The endpoint(s) should be denied in the ACL",
 		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Output JSON format",
+		},
 	},
 }
 
@@ -66,6 +70,7 @@ func callAclEndpoint(c *cli.Context) error {
 		return output(c, nil, err)
 	}
 
+	out := api.Collections{}
 	for _, collection := range *collections {
 		var acl []string
 
@@ -74,17 +79,19 @@ func callAclEndpoint(c *cli.Context) error {
 		}
 
 		if c.Bool("allow") {
-			_, err := api.CollectionAclAllow(collection.Id, acl)
+			col, err := api.CollectionAclAllow(collection.Id, acl)
 			if err != nil {
 				return output(c, nil, err)
 			}
+			out = append(out, *col)
 		} else {
-			_, err := api.CollectionAclDeny(collection.Id, acl)
+			col, err := api.CollectionAclDeny(collection.Id, acl)
 			if err != nil {
 				return output(c, nil, err)
 			}
+			out = append(out, *col)
 		}
 	}
 
-	return output(c, nil, err)
+	return output(c, out, err)
 }

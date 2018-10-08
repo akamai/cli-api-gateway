@@ -71,6 +71,10 @@ var commandConstraints cli.Command = cli.Command{
 			Name:  "disable",
 			Usage: "Disable api key security",
 		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Output JSON format",
+		},
 	},
 }
 

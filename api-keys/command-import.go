@@ -39,6 +39,10 @@ var commandKeysImport cli.Command = cli.Command{
 			Name:  "filename",
 			Usage: "The name of the file to import.",
 		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Output JSON format",
+		},
 	},
 }
 

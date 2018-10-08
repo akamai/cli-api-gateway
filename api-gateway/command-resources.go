@@ -66,9 +66,5 @@ func callListResources(c *cli.Context) error {
 	}
 
 	resources, err := api.GetResources(c.Int("endpoint"), version)
-	if c.Bool("json") {
-		return output(c, resources, err)
-	}
-
-	return outputTable(c, resources.ToTable(), err)
+	return output(c, resources, err)
 }

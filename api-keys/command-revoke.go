@@ -35,6 +35,10 @@ var commandRevokeKey cli.Command = cli.Command{
 			Name:  "key",
 			Usage: "The key to revoke.",
 		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Output JSON format",
+		},
 	},
 }
 

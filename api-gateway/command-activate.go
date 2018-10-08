@@ -84,5 +84,5 @@ func callActivateEndpoint(c *cli.Context) error {
 		version,
 		activation,
 	)
-	return output(c, activation, err)
+	return output(c, nil, err)
 }

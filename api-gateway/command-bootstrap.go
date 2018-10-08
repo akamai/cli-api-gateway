@@ -71,30 +71,33 @@ func output(c *cli.Context, toReturn interface{}, err error) error {
 		return cli.NewExitError(color.RedString(err.Error()), 1)
 	}
 
-	akamai.StopSpinnerOk()
+	if c.Bool("json") {
+		if toReturn != nil {
+			returnJSON, err := json.MarshalIndent(toReturn, "", "  ")
+			if err != nil {
+				akamai.StopSpinnerFail()
+				return cli.NewExitError(color.RedString(err.Error()), 1)
+			}
 
-	if toReturn != nil {
-		returnJSON, err := json.MarshalIndent(toReturn, "", "  ")
-		if err != nil {
-			akamai.StopSpinnerFail()
-			return cli.NewExitError(color.RedString(err.Error()), 1)
+			akamai.StopSpinnerOk()
+			fmt.Fprintln(c.App.Writer, string(returnJSON))
+			return nil
 		}
 
-		fmt.Fprintln(c.App.Writer, string(returnJSON))
-	}
-
-	return nil
-}
-
-func outputTable(c *cli.Context, toReturn *tablewriter.Table, err error) error {
-	if err != nil {
-		akamai.StopSpinnerFail()
-		return cli.NewExitError(color.RedString(err.Error()), 1)
+		akamai.StopSpinnerOk()
+		return nil
 	}
 
 	akamai.StopSpinnerOk()
-	toReturn.Render()
+
+	t, ok := toReturn.(Tabular)
+	if ok {
+		tt := t.ToTable()
+		tt.Render()
+	}
+
 	return nil
+
 }
 
 func hasSTDIN() bool {
@@ -108,4 +111,8 @@ func hasSTDIN() bool {
 	}
 
 	return false
+}
+
+type Tabular interface {
+	ToTable() *tablewriter.Table
 }

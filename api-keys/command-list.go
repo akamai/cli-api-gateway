@@ -30,6 +30,12 @@ var commandListKeyCollections cli.Command = cli.Command{
 	Description: "Retrieve a list of all key collections configured at Akamai.",
 	HideHelp:    true,
 	Action:      callListKeyCollections,
+	Flags: []cli.Flag{
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Output JSON format",
+		},
+	},
 }
 
 func callListKeyCollections(c *cli.Context) error {

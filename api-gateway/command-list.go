@@ -104,9 +104,5 @@ func callListEndpoints(c *cli.Context) error {
 	list := &api.EndpointList{}
 	err = list.ListEndpoints(flagsListEndpoints)
 
-	if c.Bool("json") {
-		return output(c, list.APIEndPoints, err)
-	}
-
-	return outputTable(c, list.ToTable(), err)
+	return output(c, list.APIEndPoints, err)
 }

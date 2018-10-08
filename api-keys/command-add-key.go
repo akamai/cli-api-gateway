@@ -57,11 +57,11 @@ func callAddCollectionKey(c *cli.Context) error {
 		fmt.Sprintf("Adding key to collection...... [%s]", color.GreenString("OK")),
 	)
 
-	collection, err := api.CollectionAddKey(
+	key, err := api.CollectionAddKey(
 		c.Int("collection"),
-		c.String("name"),
+		c.String("key"),
 		c.String("value"),
 	)
 
-	return output(c, collection, err)
+	return output(c, key, err)
 }

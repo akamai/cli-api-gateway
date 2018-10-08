@@ -53,6 +53,10 @@ var commandCreateCollection cli.Command = cli.Command{
 			Usage:       "The unique identifier for the group under which to provision the endpoint.",
 			Destination: &flagsCreateCollection.GroupId,
 		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Output JSON format",
+		},
 	},
 }
 

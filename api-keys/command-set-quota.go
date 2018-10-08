@@ -43,6 +43,10 @@ var commandSetKeyQuota cli.Command = cli.Command{
 			Name:  "interval",
 			Usage: "The interval at which to reset the quota limit. 1hr | 6hr | 12hr | day | week | month",
 		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Output JSON format",
+		},
 	},
 }
 

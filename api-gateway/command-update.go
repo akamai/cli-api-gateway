@@ -67,6 +67,10 @@ var commandUpdateEndpoint cli.Command = cli.Command{
 			Usage:       "The URL scheme to which the endpoint may respond, either http, https, or http/https for both.",
 			Destination: &flagsUpdateEndpoint.APIEndPointScheme,
 		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Output JSON format",
+		},
 	},
 }
 
@@ -106,5 +110,6 @@ func callUpdateEndpoint(c *cli.Context) error {
 	flagsUpdateEndpoint.APIEndPointHosts = c.StringSlice("hostname")
 
 	endpoint, err = api.ModifyVersion(flagsUpdateEndpoint)
+
 	return output(c, endpoint, err)
 }

@@ -39,6 +39,10 @@ var commandStatus cli.Command = cli.Command{
 			Name:  "version",
 			Usage: "The endpoint version number.",
 		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Output JSON format",
+		},
 	},
 }
 

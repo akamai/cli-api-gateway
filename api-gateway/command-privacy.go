@@ -51,6 +51,10 @@ var commandPrivacy cli.Command = cli.Command{
 			Name:  "resource",
 			Usage: "The resource name to apply the settings to.",
 		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Output JSON format",
+		},
 	},
 }
 

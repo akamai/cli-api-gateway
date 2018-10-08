@@ -57,6 +57,10 @@ var commandCreateEndpoint cli.Command = cli.Command{
 			Usage:       "The unique identifier for the group under which to provision the endpoint.",
 			Destination: &flagsCreateEndpoint.GroupId,
 		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Output JSON format",
+		},
 	},
 }
 
@@ -74,5 +78,6 @@ func callCreateEndpoint(c *cli.Context) error {
 	flagsCreateEndpoint.Hostnames = c.StringSlice("hostname")
 
 	endpoint, err := api.CreateEndpoint(flagsCreateEndpoint)
+
 	return output(c, endpoint, err)
 }

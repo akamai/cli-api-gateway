@@ -49,6 +49,6 @@ func callRemoveEndpoint(c *cli.Context) error {
 		fmt.Sprintf("Removing API endpoint...... [%s]", color.GreenString("OK")),
 	)
 
-	endpoint, err := api.RemoveEndpoint(c.Int("endpoint"))
-	return output(c, endpoint, err)
+	_, err = api.RemoveEndpoint(c.Int("endpoint"))
+	return output(c, nil, err)
 }

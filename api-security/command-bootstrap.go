@@ -24,6 +24,7 @@ import (
 	akamai "github.com/akamai/cli-common-golang"
 
 	"github.com/fatih/color"
+	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli"
 )
 
@@ -65,15 +66,33 @@ func output(c *cli.Context, toReturn interface{}, err error) error {
 		return cli.NewExitError(color.RedString(err.Error()), 1)
 	}
 
-	returnJSON, err := json.MarshalIndent(toReturn, "", "  ")
-	if err != nil {
-		akamai.StopSpinnerFail()
-		return cli.NewExitError(color.RedString(err.Error()), 1)
+	if c.Bool("json") {
+		if toReturn != nil {
+			returnJSON, err := json.MarshalIndent(toReturn, "", "  ")
+			if err != nil {
+				akamai.StopSpinnerFail()
+				return cli.NewExitError(color.RedString(err.Error()), 1)
+			}
+
+			akamai.StopSpinnerOk()
+			fmt.Fprintln(c.App.Writer, string(returnJSON))
+			return nil
+		}
+
+		akamai.StopSpinnerOk()
+		return nil
 	}
 
 	akamai.StopSpinnerOk()
-	fmt.Fprintln(c.App.Writer, string(returnJSON))
+
+	t, ok := toReturn.(Tabular)
+	if ok {
+		tt := t.ToTable()
+		tt.Render()
+	}
+
 	return nil
+
 }
 
 func hasSTDIN() bool {
@@ -87,4 +106,8 @@ func hasSTDIN() bool {
 	}
 
 	return false
+}
+
+type Tabular interface {
+	ToTable() *tablewriter.Table
 }
