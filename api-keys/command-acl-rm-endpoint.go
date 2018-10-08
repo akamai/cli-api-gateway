@@ -15,9 +15,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 
-	api2 "github.com/akamai/AkamaiOPEN-edgegrid-golang/api-endpoints-v2"
 	api "github.com/akamai/AkamaiOPEN-edgegrid-golang/apikey-manager-v1"
 	akamai "github.com/akamai/cli-common-golang"
 
@@ -25,36 +25,20 @@ import (
 	"github.com/urfave/cli"
 )
 
-var commandAclResource cli.Command = cli.Command{
-	Name:        "acl-resource",
+var commandAclRmEndpoint cli.Command = cli.Command{
+	Name:        "acl-rm-endpoint",
 	ArgsUsage:   "",
-	Description: "This operation allows or denies a resource(s) on the key collection ACL",
+	Description: "This operation removes an endpoint(s) on the key collection ACL",
 	HideHelp:    true,
-	Action:      callAclResource,
+	Action:      callAclRmEndpoint,
 	Flags: []cli.Flag{
 		cli.StringFlag{
 			Name:  "collection",
 			Usage: "The collection name or ID to modify.",
 		},
-		cli.IntFlag{
+		cli.IntSliceFlag{
 			Name:  "endpoint",
-			Usage: "The endpoint ID the resources are associated with",
-		},
-		cli.IntFlag{
-			Name:  "version",
-			Usage: "The endpoint version.",
-		},
-		cli.StringSliceFlag{
-			Name:  "resource",
-			Usage: "The resource name or ID to allow/deny on the ACL",
-		},
-		cli.BoolFlag{
-			Name:  "allow",
-			Usage: "The resource(s) should be allowed in the ACL",
-		},
-		cli.BoolFlag{
-			Name:  "deny",
-			Usage: "The resource(s) should be denied in the ACL",
+			Usage: "The endpoint ID(s) to add to the ACL, multiples allowed",
 		},
 		cli.BoolFlag{
 			Name:  "json",
@@ -63,7 +47,7 @@ var commandAclResource cli.Command = cli.Command{
 	},
 }
 
-func callAclResource(c *cli.Context) error {
+func callAclRmEndpoint(c *cli.Context) error {
 	err := initConfig(c)
 	if err != nil {
 		return cli.NewExitError(color.RedString(err.Error()), 1)
@@ -74,12 +58,8 @@ func callAclResource(c *cli.Context) error {
 		fmt.Sprintf("Updating key collection ACL...... [%s]", color.GreenString("OK")),
 	)
 
-	version := c.Int("version")
-	if version == 0 {
-		version, err = api2.GetLatestVersionNumber(c.Int("endpoint"), false)
-		if err != nil {
-			return output(c, nil, err)
-		}
+	if c.String("collection") == "" {
+		return output(c, nil, errors.New("Collection ID or name missing"))
 	}
 
 	collections, err := api.GetCollectionMulti(c.String("collection"))
@@ -91,29 +71,15 @@ func callAclResource(c *cli.Context) error {
 	for _, collection := range *collections {
 		var acl []string
 
-		for _, e := range c.StringSlice("resource") {
-			resources, err := api2.GetResourceMulti(c.Int("endpoint"), e, version)
-			if err != nil {
-				return output(c, nil, err)
-			}
-			for _, r := range resources {
-				acl = append(acl, fmt.Sprintf("RESOURCE-%d", r.APIResourceLogicID))
-			}
+		for _, e := range c.IntSlice("endpoint") {
+			acl = append(acl, fmt.Sprintf("ENDPOINT-%d", e))
 		}
 
-		if c.Bool("allow") {
-			col, err := api.CollectionAclAllow(collection.Id, acl)
-			if err != nil {
-				return output(c, nil, err)
-			}
-			out = append(out, *col)
-		} else {
-			col, err := api.CollectionAclDeny(collection.Id, acl)
-			if err != nil {
-				return output(c, nil, err)
-			}
-			out = append(out, *col)
+		col, err := api.CollectionAclDeny(collection.Id, acl)
+		if err != nil {
+			return output(c, nil, err)
 		}
+		out = append(out, *col)
 	}
 
 	return output(c, out, err)
