@@ -44,7 +44,7 @@ var commandActivateEndpoint cli.Command = cli.Command{
 			Usage: "[Staging and/or Production] Which network to activate the endpoint on, pass multiple flags if needed.",
 		},
 		cli.StringSliceFlag{
-			Name:  "notificationRecipient",
+			Name:  "email",
 			Usage: "Email address(es) to notify when the activation is complete, pass multiple flags if needed.",
 		},
 		cli.StringFlag{
@@ -66,7 +66,7 @@ func callActivateEndpoint(c *cli.Context) error {
 	)
 
 	activation := &api.Activation{
-		NotificationRecipients: c.StringSlice("notificationRecipient"),
+		NotificationRecipients: c.StringSlice("email"),
 		Networks:               c.StringSlice("network"),
 		Notes:                  c.String("notes"),
 	}
