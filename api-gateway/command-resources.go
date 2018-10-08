@@ -39,6 +39,10 @@ var commandListResources cli.Command = cli.Command{
 			Name:  "version",
 			Usage: "The endpoint version number.",
 		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Output the results in JSON.",
+		},
 	},
 }
 
@@ -62,5 +66,9 @@ func callListResources(c *cli.Context) error {
 	}
 
 	resources, err := api.GetResources(c.Int("endpoint"), version)
-	return output(c, resources, err)
+	if c.Bool("json") {
+		return output(c, resources, err)
+	}
+
+	return outputTable(c, resources.ToTable(), err)
 }
