@@ -57,9 +57,15 @@ func callKeysImport(c *cli.Context) error {
 		fmt.Sprintf("Importing keys to collection...... [%s]", color.GreenString("OK")),
 	)
 
+	filename := c.String("filename")
+	if filename == "" && hasSTDIN() == true {
+		// TODO: windows support?
+		filename = "/dev/stdin"
+	}
+
 	keys, err := api.CollectionImportKeys(
 		c.Int("collection"),
-		c.String("filename"),
+		filename,
 	)
 
 	return output(c, keys, err)
