@@ -31,9 +31,9 @@ var commandSetKeyQuota cli.Command = cli.Command{
 	HideHelp:    true,
 	Action:      callSetKeyQuota,
 	Flags: []cli.Flag{
-		cli.IntFlag{
+		cli.StringFlag{
 			Name:  "collection",
-			Usage: "The collection ID to modify.",
+			Usage: "The collection name or ID to modify, wildcards are supported.",
 		},
 		cli.IntFlag{
 			Name:  "limit",
@@ -89,7 +89,7 @@ func callSetKeyQuota(c *cli.Context) error {
 		interval = "MONTH"
 	}
 
-	collection, err := api.CollectionSetQuota(c.Int("collection"), c.Int("limit"), interval)
+	collection, err := api.CollectionSetQuota(c.String("collection"), c.Int("limit"), interval)
 
 	return output(c, collection, err)
 }
