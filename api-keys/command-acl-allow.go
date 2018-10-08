@@ -31,9 +31,9 @@ var commandAclAllow cli.Command = cli.Command{
 	HideHelp:    true,
 	Action:      callAclAllow,
 	Flags: []cli.Flag{
-		cli.IntFlag{
+		cli.StringFlag{
 			Name:  "collection",
-			Usage: "The collection ID to modify.",
+			Usage: "The collection name or ID to modify.",
 		},
 		cli.IntSliceFlag{
 			Name:  "endpoint",
@@ -57,17 +57,27 @@ func callAclAllow(c *cli.Context) error {
 		fmt.Sprintf("Updating key collection ACL...... [%s]", color.GreenString("OK")),
 	)
 
-	var acl []string
-
-	for _, e := range c.IntSlice("endpoint") {
-		acl = append(acl, fmt.Sprintf("ENDPOINT-%d", e))
+	collections, err := api.GetCollectionMulti(c.String("collection"))
+	if err != nil {
+		return output(c, nil, err)
 	}
 
-	for _, r := range c.IntSlice("resource") {
-		acl = append(acl, fmt.Sprintf("RESOURCE-%d", r))
+	for _, collection := range *collections {
+		var acl []string
+
+		for _, e := range c.IntSlice("endpoint") {
+			acl = append(acl, fmt.Sprintf("ENDPOINT-%d", e))
+		}
+
+		for _, r := range c.IntSlice("resource") {
+			acl = append(acl, fmt.Sprintf("RESOURCE-%d", r))
+		}
+
+		_, err := api.CollectionAclAllow(collection.Id, acl)
+		if err != nil {
+			return output(c, nil, err)
+		}
 	}
 
-	collection, err := api.CollectionAclAllow(c.Int("collection"), acl)
-
-	return output(c, collection, err)
+	return output(c, nil, err)
 }
