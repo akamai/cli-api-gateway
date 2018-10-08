@@ -92,7 +92,7 @@ func callImportEndpoint(c *cli.Context) error {
 	}
 
 	if flagsUpdate.Version == 0 {
-		flagsUpdate.Version, err = api.GetLatestVersionNumber(flagsUpdate.EndpointId)
+		flagsUpdate.Version, err = api.GetLatestVersionNumber(flagsUpdate.EndpointId, true)
 		if err != nil {
 			return output(c, nil, err)
 		}

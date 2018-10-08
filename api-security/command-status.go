@@ -59,7 +59,7 @@ func callStatus(c *cli.Context) error {
 
 	version := c.Int("version")
 	if version == 0 {
-		version, err = api.GetLatestVersionNumber(c.Int("endpoint"))
+		version, err = api.GetLatestVersionNumber(c.Int("endpoint"), false)
 		if err != nil {
 			return output(c, nil, err)
 		}

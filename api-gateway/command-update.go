@@ -86,7 +86,7 @@ func callUpdateEndpoint(c *cli.Context) error {
 	)
 
 	if flagsUpdateEndpoint.VersionNumber == 0 {
-		flagsUpdateEndpoint.VersionNumber, err = api.GetLatestVersionNumber(flagsUpdateEndpoint.APIEndPointID)
+		flagsUpdateEndpoint.VersionNumber, err = api.GetLatestVersionNumber(flagsUpdateEndpoint.APIEndPointID, true)
 		if err != nil {
 			return output(c, nil, err)
 		}
