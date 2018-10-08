@@ -17,6 +17,7 @@ package main
 import (
 	"fmt"
 
+	api2 "github.com/akamai/AkamaiOPEN-edgegrid-golang/api-endpoints-v2"
 	api "github.com/akamai/AkamaiOPEN-edgegrid-golang/apikey-manager-v1"
 	akamai "github.com/akamai/cli-common-golang"
 
@@ -24,29 +25,41 @@ import (
 	"github.com/urfave/cli"
 )
 
-var commandAclDeny cli.Command = cli.Command{
-	Name:        "acl-deny",
+var commandAclResource cli.Command = cli.Command{
+	Name:        "acl-resource",
 	ArgsUsage:   "",
-	Description: "This operation removes/denies an endpoint or resource from the key collection ACL",
+	Description: "This operation allows or denies a resource(s) on the key collection ACL",
 	HideHelp:    true,
-	Action:      callAclDeny,
+	Action:      callAclResource,
 	Flags: []cli.Flag{
 		cli.StringFlag{
 			Name:  "collection",
 			Usage: "The collection name or ID to modify.",
 		},
-		cli.IntSliceFlag{
+		cli.IntFlag{
 			Name:  "endpoint",
-			Usage: "The endpoint ID to remove from the ACL, multiples allowed",
+			Usage: "The endpoint ID the resources are associated with",
 		},
-		cli.IntSliceFlag{
+		cli.IntFlag{
+			Name:  "version",
+			Usage: "The endpoint version.",
+		},
+		cli.StringSliceFlag{
 			Name:  "resource",
-			Usage: "The resource ID to remove from the ACL, multiples allowed",
+			Usage: "The resource name or ID to allow/deny on the ACL",
+		},
+		cli.BoolFlag{
+			Name:  "allow",
+			Usage: "The resource(s) should be allowed in the ACL",
+		},
+		cli.BoolFlag{
+			Name:  "deny",
+			Usage: "The resource(s) should be denied in the ACL",
 		},
 	},
 }
 
-func callAclDeny(c *cli.Context) error {
+func callAclResource(c *cli.Context) error {
 	err := initConfig(c)
 	if err != nil {
 		return cli.NewExitError(color.RedString(err.Error()), 1)
@@ -57,6 +70,14 @@ func callAclDeny(c *cli.Context) error {
 		fmt.Sprintf("Updating key collection ACL...... [%s]", color.GreenString("OK")),
 	)
 
+	version := c.Int("version")
+	if version == 0 {
+		version, err = api2.GetLatestVersionNumber(c.Int("endpoint"))
+		if err != nil {
+			return output(c, nil, err)
+		}
+	}
+
 	collections, err := api.GetCollectionMulti(c.String("collection"))
 	if err != nil {
 		return output(c, nil, err)
@@ -65,17 +86,26 @@ func callAclDeny(c *cli.Context) error {
 	for _, collection := range *collections {
 		var acl []string
 
-		for _, e := range c.IntSlice("endpoint") {
-			acl = append(acl, fmt.Sprintf("ENDPOINT-%d", e))
+		for _, e := range c.StringSlice("resource") {
+			resources, err := api2.GetResourceMulti(c.Int("endpoint"), e, version)
+			if err != nil {
+				return output(c, nil, err)
+			}
+			for _, r := range resources {
+				acl = append(acl, fmt.Sprintf("RESOURCE-%d", r.APIResourceLogicID))
+			}
 		}
 
-		for _, r := range c.IntSlice("resource") {
-			acl = append(acl, fmt.Sprintf("RESOURCE-%d", r))
-		}
-
-		_, err := api.CollectionAclDeny(collection.Id, acl)
-		if err != nil {
-			return output(c, nil, err)
+		if c.Bool("allow") {
+			_, err := api.CollectionAclAllow(collection.Id, acl)
+			if err != nil {
+				return output(c, nil, err)
+			}
+		} else {
+			_, err := api.CollectionAclDeny(collection.Id, acl)
+			if err != nil {
+				return output(c, nil, err)
+			}
 		}
 	}
 

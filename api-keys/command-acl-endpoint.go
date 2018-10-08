@@ -24,12 +24,12 @@ import (
 	"github.com/urfave/cli"
 )
 
-var commandAclAllow cli.Command = cli.Command{
-	Name:        "acl-allow",
+var commandAclEndpoint cli.Command = cli.Command{
+	Name:        "acl-endpoint",
 	ArgsUsage:   "",
-	Description: "This operation adds/allows an endpoint on the key collection ACL",
+	Description: "This operation allows or denies an endpoint(s) on the key collection ACL",
 	HideHelp:    true,
-	Action:      callAclAllow,
+	Action:      callAclEndpoint,
 	Flags: []cli.Flag{
 		cli.StringFlag{
 			Name:  "collection",
@@ -37,16 +37,20 @@ var commandAclAllow cli.Command = cli.Command{
 		},
 		cli.IntSliceFlag{
 			Name:  "endpoint",
-			Usage: "The endpoint ID to add to the ACL, multiples allowed",
+			Usage: "The endpoint ID(s) to add to the ACL, multiples allowed",
 		},
-		cli.IntSliceFlag{
-			Name:  "resource",
-			Usage: "The resource ID to add to the ACL, multiples allowed",
+		cli.BoolFlag{
+			Name:  "allow",
+			Usage: "The endpoint(s) should be allowed in the ACL",
+		},
+		cli.BoolFlag{
+			Name:  "deny",
+			Usage: "The endpoint(s) should be denied in the ACL",
 		},
 	},
 }
 
-func callAclAllow(c *cli.Context) error {
+func callAclEndpoint(c *cli.Context) error {
 	err := initConfig(c)
 	if err != nil {
 		return cli.NewExitError(color.RedString(err.Error()), 1)
@@ -69,13 +73,16 @@ func callAclAllow(c *cli.Context) error {
 			acl = append(acl, fmt.Sprintf("ENDPOINT-%d", e))
 		}
 
-		for _, r := range c.IntSlice("resource") {
-			acl = append(acl, fmt.Sprintf("RESOURCE-%d", r))
-		}
-
-		_, err := api.CollectionAclAllow(collection.Id, acl)
-		if err != nil {
-			return output(c, nil, err)
+		if c.Bool("allow") {
+			_, err := api.CollectionAclAllow(collection.Id, acl)
+			if err != nil {
+				return output(c, nil, err)
+			}
+		} else {
+			_, err := api.CollectionAclDeny(collection.Id, acl)
+			if err != nil {
+				return output(c, nil, err)
+			}
 		}
 	}
 
