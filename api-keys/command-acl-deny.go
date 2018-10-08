@@ -31,7 +31,7 @@ var commandAclDeny cli.Command = cli.Command{
 	HideHelp:    true,
 	Action:      callAclDeny,
 	Flags: []cli.Flag{
-		cli.IntFlag{
+		cli.StringFlag{
 			Name:  "collection",
 			Usage: "The collection name or ID to modify.",
 		},
