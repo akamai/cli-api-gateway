@@ -53,6 +53,14 @@ func callListResources(c *cli.Context) error {
 		fmt.Sprintf("Fetching endpoint resources list...... [%s]", color.GreenString("OK")),
 	)
 
-	resources, err := api.GetResources(c.Int("endpoint"), c.Int("version"))
+	version := c.Int("version")
+	if version == 0 {
+		version, err = api.GetLatestVersionNumber(c.Int("endpoint"))
+		if err != nil {
+			return output(c, nil, err)
+		}
+	}
+
+	resources, err := api.GetResources(c.Int("endpoint"), version)
 	return output(c, resources, err)
 }

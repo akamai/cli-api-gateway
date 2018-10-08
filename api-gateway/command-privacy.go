@@ -65,13 +65,21 @@ func callPrivacy(c *cli.Context) error {
 		fmt.Sprintf("Updating privacy...... [%s]", color.GreenString("OK")),
 	)
 
-	settings, err := api.GetAPIPrivacySettings(c.Int("endpoint"), c.Int("version"))
+	version := c.Int("version")
+	if version == 0 {
+		version, err = api.GetLatestVersionNumber(c.Int("endpoint"))
+		if err != nil {
+			return output(c, nil, err)
+		}
+	}
+
+	settings, err := api.GetAPIPrivacySettings(c.Int("endpoint"), version)
 	if err != nil {
 		return output(c, nil, err)
 	}
 
 	if c.String("resource") != "" {
-		resources, err := api.GetResourceMulti(c.Int("endpoint"), c.String("resource"), c.Int("version"))
+		resources, err := api.GetResourceMulti(c.Int("endpoint"), c.String("resource"), version)
 		if err != nil {
 			return output(c, nil, err)
 		}
@@ -99,7 +107,7 @@ func callPrivacy(c *cli.Context) error {
 		settings.Public = c.Bool("public")
 	}
 
-	_, err = api.UpdateAPIPrivacySettings(c.Int("endpoint"), c.Int("version"), settings)
+	_, err = api.UpdateAPIPrivacySettings(c.Int("endpoint"), version, settings)
 
 	return output(c, settings, err)
 }
