@@ -87,14 +87,17 @@ func callImportEndpoint(c *cli.Context) error {
 		flagsUpdate.File = "/dev/stdin"
 	}
 
+	if flagsUpdate.Version == 0 {
+		flagsUpdate.Version, err = api.GetLatestVersionNumber(flagsUpdate.EndpointId)
+		if err != nil {
+			return output(c, nil, err)
+		}
+	}
+
 	var endpoint *api.Endpoint
 
 	if flagsUpdate.EndpointId > 0 {
-		endpoint, err = api.GetVersion(&api.GetVersionOptions{
-			flagsUpdate.EndpointId,
-			flagsUpdate.Version,
-		})
-
+		endpoint, err = api.GetVersion(flagsUpdate.EndpointId, flagsUpdate.Version)
 		if err != nil {
 			return output(c, endpoint, err)
 		}
@@ -103,10 +106,10 @@ func callImportEndpoint(c *cli.Context) error {
 		flagsUpdate.Version = endpoint.VersionNumber
 
 		if api.IsActive(endpoint, "production") || api.IsActive(endpoint, "staging") {
-			endpoint, err = api.CloneVersion(&api.CloneVersionOptions{
+			endpoint, err = api.CloneVersion(
 				flagsUpdate.EndpointId,
 				flagsUpdate.Version,
-			})
+			)
 
 			if err != nil {
 				return output(c, endpoint, err)

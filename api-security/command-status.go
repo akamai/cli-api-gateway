@@ -53,11 +53,15 @@ func callStatus(c *cli.Context) error {
 		fmt.Sprintf("Getting Security Settings...... [%s]", color.GreenString("OK")),
 	)
 
-	endpoint, err := api.GetVersion(&api.GetVersionOptions{
-		EndpointId: c.Int("endpoint"),
-		Version:    c.Int("version"),
-	})
+	version := c.Int("version")
+	if version == 0 {
+		version, err = api.GetLatestVersionNumber(c.Int("endpoint"))
+		if err != nil {
+			return output(c, nil, err)
+		}
+	}
 
+	endpoint, err := api.GetVersion(c.Int("endpoint"), version)
 	if err != nil {
 		return output(c, endpoint, err)
 	}

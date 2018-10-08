@@ -24,9 +24,6 @@ import (
 	"github.com/urfave/cli"
 )
 
-var flagsActivateEndpoint *api.ActivateEndpointOptions = &api.ActivateEndpointOptions{}
-var flagsActivation *api.Activation = &api.Activation{}
-
 var commandActivateEndpoint cli.Command = cli.Command{
 	Name:        "activate",
 	ArgsUsage:   "",
@@ -35,14 +32,12 @@ var commandActivateEndpoint cli.Command = cli.Command{
 	Action:      callActivateEndpoint,
 	Flags: []cli.Flag{
 		cli.IntFlag{
-			Name:        "endpoint",
-			Usage:       "The unique identifier for the endpoint.",
-			Destination: &flagsActivateEndpoint.APIEndPointId,
+			Name:  "endpoint",
+			Usage: "The unique identifier for the endpoint.",
 		},
 		cli.IntFlag{
-			Name:        "version",
-			Usage:       "The endpoint version number.",
-			Destination: &flagsActivateEndpoint.VersionNumber,
+			Name:  "version",
+			Usage: "The endpoint version number.",
 		},
 		cli.StringSliceFlag{
 			Name:  "network",
@@ -53,9 +48,8 @@ var commandActivateEndpoint cli.Command = cli.Command{
 			Usage: "Email address(es) to notify when the activation is complete, pass multiple flags if needed.",
 		},
 		cli.StringFlag{
-			Name:        "notes",
-			Usage:       "Comments on the activation",
-			Destination: &flagsActivation.Notes,
+			Name:  "notes",
+			Usage: "Comments on the activation",
 		},
 	},
 }
@@ -71,9 +65,24 @@ func callActivateEndpoint(c *cli.Context) error {
 		fmt.Sprintf("Activating new API endpoint...... [%s]", color.GreenString("OK")),
 	)
 
-	flagsActivation.NotificationRecipients = c.StringSlice("notificationRecipient")
-	flagsActivation.Networks = c.StringSlice("network")
+	activation := &api.Activation{
+		NotificationRecipients: c.StringSlice("notificationRecipient"),
+		Networks:               c.StringSlice("network"),
+		Notes:                  c.String("notes"),
+	}
 
-	activation, err := api.ActivateEndpoint(flagsActivateEndpoint, flagsActivation)
+	version := c.Int("version")
+	if version <= 0 {
+		version, err = api.GetLatestVersionNumber(c.Int("endpoint"))
+		if err != nil {
+			return output(c, nil, err)
+		}
+	}
+
+	activation, err = api.ActivateEndpoint(
+		c.Int("endpoint"),
+		version,
+		activation,
+	)
 	return output(c, activation, err)
 }

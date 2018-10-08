@@ -81,21 +81,20 @@ func callUpdateEndpoint(c *cli.Context) error {
 		fmt.Sprintf("Updating API endpoint...... [%s]", color.GreenString("OK")),
 	)
 
-	endpoint, err := api.GetVersion(&api.GetVersionOptions{
-		flagsUpdateEndpoint.APIEndPointID,
-		flagsUpdateEndpoint.VersionNumber,
-	})
+	if flagsUpdateEndpoint.VersionNumber == 0 {
+		flagsUpdateEndpoint.VersionNumber, err = api.GetLatestVersionNumber(flagsUpdateEndpoint.APIEndPointID)
+		if err != nil {
+			return output(c, nil, err)
+		}
+	}
 
+	endpoint, err := api.GetVersion(flagsUpdateEndpoint.APIEndPointID, flagsUpdateEndpoint.VersionNumber)
 	if err != nil {
 		return output(c, endpoint, err)
 	}
 
 	if api.IsActive(endpoint, "production") || api.IsActive(endpoint, "staging") {
-		endpoint, err = api.CloneVersion(&api.CloneVersionOptions{
-			flagsUpdateEndpoint.APIEndPointID,
-			flagsUpdateEndpoint.VersionNumber,
-		})
-
+		endpoint, err = api.CloneVersion(flagsUpdateEndpoint.APIEndPointID, flagsUpdateEndpoint.VersionNumber)
 		if err != nil {
 			return output(c, endpoint, err)
 		}

@@ -69,21 +69,22 @@ func callApiKeys(c *cli.Context) error {
 		fmt.Sprintf("Updating API Keys...... [%s]", color.GreenString("OK")),
 	)
 
-	endpoint, err := api.GetVersion(&api.GetVersionOptions{
-		EndpointId: c.Int("endpoint"),
-		Version:    c.Int("version"),
-	})
+	version := c.Int("version")
+	if version == 0 {
+		version, err = api.GetLatestVersionNumber(c.Int("endpoint"))
+		if err != nil {
+			return output(c, nil, err)
+		}
+	}
+
+	endpoint, err := api.GetVersion(c.Int("endpoint"), version)
 
 	if err != nil {
 		return output(c, endpoint, err)
 	}
 
 	if api.IsActive(endpoint, "production") || api.IsActive(endpoint, "staging") {
-		endpoint, err = api.CloneVersion(&api.CloneVersionOptions{
-			endpoint.APIEndPointID,
-			endpoint.VersionNumber,
-		})
-
+		endpoint, err = api.CloneVersion(endpoint.APIEndPointID, endpoint.VersionNumber)
 		if err != nil {
 			return output(c, endpoint, err)
 		}
