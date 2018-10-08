@@ -27,7 +27,7 @@ import (
 var commandAclDeny cli.Command = cli.Command{
 	Name:        "acl-deny",
 	ArgsUsage:   "",
-	Description: "This operation removes and endpoint from the key collection ACL",
+	Description: "This operation removes/denies an endpoint or resource from the key collection ACL",
 	HideHelp:    true,
 	Action:      callAclDeny,
 	Flags: []cli.Flag{

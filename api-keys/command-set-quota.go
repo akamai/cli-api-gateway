@@ -36,8 +36,12 @@ var commandSetKeyQuota cli.Command = cli.Command{
 			Usage: "The collection ID to modify.",
 		},
 		cli.IntFlag{
-			Name:  "value",
-			Usage: "The quota value.",
+			Name:  "limit",
+			Usage: "The quota limit.",
+		},
+		cli.StringFlag{
+			Name:  "interval",
+			Usage: "The interval at which to reset the quota limit. 1hr | 6hr | 12hr | day | week | month",
 		},
 	},
 }
@@ -53,7 +57,35 @@ func callSetKeyQuota(c *cli.Context) error {
 		fmt.Sprintf("Setting quota...... [%s]", color.GreenString("OK")),
 	)
 
-	collection, err := api.CollectionSetQuota(c.Int("collection"), c.Int("value"))
+	interval := "HOUR_1"
+	switch c.String("interval") {
+	case "1h":
+		interval = "HOUR_1"
+	case "1hour":
+		interval = "HOUR_1"
+	case "6h":
+		interval = "HOUR_6"
+	case "6hour":
+		interval = "HOUR_6"
+	case "12h":
+		interval = "HOUR_12"
+	case "12hour":
+		interval = "HOUR_12"
+	case "d":
+		interval = "DAY"
+	case "day":
+		interval = "DAY"
+	case "w":
+		interval = "WEEK"
+	case "week":
+		interval = "WEEK"
+	case "m":
+		interval = "MONTH"
+	case "month":
+		interval = "MONTH"
+	}
+
+	collection, err := api.CollectionSetQuota(c.Int("collection"), c.Int("limit"), interval)
 
 	return output(c, collection, err)
 }
