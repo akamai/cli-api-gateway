@@ -70,9 +70,12 @@ func callStatus(c *cli.Context) error {
 		return output(c, endpoint, err)
 	}
 
-	e := &api.Endpoint{}
-	e.SecurityScheme = endpoint.SecurityScheme
-	e.AkamaiSecurityRestrictions = endpoint.AkamaiSecurityRestrictions
+	e := &api.EndpointSecurity{
+		APIEndPointID:              endpoint.APIEndPointID,
+		APIEndPointName:            endpoint.APIEndPointName,
+		SecurityScheme:             endpoint.SecurityScheme,
+		AkamaiSecurityRestrictions: endpoint.AkamaiSecurityRestrictions,
+	}
 
 	return output(c, e, err)
 }
