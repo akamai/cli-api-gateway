@@ -104,5 +104,5 @@ func callListEndpoints(c *cli.Context) error {
 	list := &api.EndpointList{}
 	err = list.ListEndpoints(flagsListEndpoints)
 
-	return output(c, list.APIEndPoints, err)
+	return output(c, list, err)
 }
