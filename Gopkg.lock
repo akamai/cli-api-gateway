@@ -11,8 +11,7 @@
     "edgegrid",
     "jsonhooks-v1"
   ]
-  revision = "b97ea50fa2fe06ed70686564c2d301cae37bca6f"
-  source = "github.com/johannac/AkamaiOPEN-edgegrid-golang"
+  revision = ""
 
 [[projects]]
   branch = "master"
@@ -93,12 +92,6 @@
   version = "v1.1.0"
 
 [[projects]]
-  name = "github.com/spf13/cast"
-  packages = ["."]
-  revision = "8965335b8c7107321228e3e3702cab9832751bac"
-  version = "v1.2.0"
-
-[[projects]]
   name = "github.com/urfave/cli"
   packages = ["."]
   revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
@@ -122,6 +115,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "510d8867d6f5ab14108f93e50ac3414aaab32b34bffeb6686c2aabf43ec51a6f"
+  inputs-digest = "173f6fc13642e2917b85d9dae4bbf95406678a6e6952a2435840b63a8d6c4f8f"
   solver-name = "gps-cdcl"
   solver-version = 1
