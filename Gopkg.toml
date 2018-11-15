@@ -28,7 +28,3 @@
 [prune]
   go-tests = true
   unused-packages = true
-
-[[constraint]]
-  name = "github.com/akamai/AkamaiOPEN-edgegrid-golang"
-  source = "github.com/johannac/AkamaiOPEN-edgegrid-golang"
