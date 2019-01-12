@@ -8,19 +8,22 @@
       "name": "api-gateway",
       "version": "0.1.0",
       "description": "Manage API definitions and endpoints",
-      "auto-complete": true
+      "auto-complete": true,
+      "bin": "https://github.com/akamai/cli-api-gateway/releases/download/{{.Version}}/akamai-{{.Name}}-{{.Version}}-{{.OS}}{{.Arch}}{{.BinSuffix}}"
     },
     {
       "name": "api-keys",
       "version": "0.1.0",
       "description": "Manage API keys",
-      "auto-complete": true
+      "auto-complete": true,
+      "bin": "https://github.com/akamai/cli-api-gateway/releases/download/{{.Version}}/akamai-{{.Name}}-{{.Version}}-{{.OS}}{{.Arch}}{{.BinSuffix}}"
     },
     {
       "name": "api-security",
       "version": "0.1.0",
       "description": "Manage API protections",
-      "auto-complete": true
+      "auto-complete": true,
+      "bin": "https://github.com/akamai/cli-api-gateway/releases/download/{{.Version}}/akamai-{{.Name}}-{{.Version}}-{{.OS}}{{.Arch}}{{.BinSuffix}}"
     }
   ]
 }
