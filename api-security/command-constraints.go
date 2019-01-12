@@ -91,7 +91,7 @@ func callConstraints(c *cli.Context) error {
 
 	version := c.Int("version")
 	if version == 0 {
-		version, err = api.GetLatestVersionNumber(c.Int("endpoint"), false)
+		version, err = api.GetLatestVersionNumber(c.Int("endpoint"), true)
 		if err != nil {
 			return output(c, nil, err)
 		}
@@ -109,9 +109,6 @@ func callConstraints(c *cli.Context) error {
 		endpoint.AkamaiSecurityRestrictions.MaxStringLength = c.Int("max-string")
 		endpoint.AkamaiSecurityRestrictions.MaxBodySize = c.Int("max-body-size")
 		endpoint.AkamaiSecurityRestrictions.MaxIntegerValue = c.Int("max-integer")
-
-		endpoint, err = api.ModifyVersion(endpoint)
-		return output(c, endpoint, err)
 	}
 
 	if c.Bool("disable") {
@@ -121,10 +118,14 @@ func callConstraints(c *cli.Context) error {
 		endpoint.AkamaiSecurityRestrictions.MaxStringLength = 0
 		endpoint.AkamaiSecurityRestrictions.MaxBodySize = 0
 		endpoint.AkamaiSecurityRestrictions.MaxIntegerValue = 0
-
-		endpoint, err = api.ModifyVersion(endpoint)
-		return output(c, endpoint, err)
+	}
+	endpoint, err = api.ModifyVersion(endpoint)
+	endpointSecurity := &api.EndpointSecurity{
+		APIEndPointID:              endpoint.APIEndPointID,
+		APIEndPointName:            endpoint.APIEndPointName,
+		SecurityScheme:             endpoint.SecurityScheme,
+		AkamaiSecurityRestrictions: endpoint.AkamaiSecurityRestrictions,
 	}
 
-	return output(c, endpoint, err)
+	return output(c, endpointSecurity, err)
 }

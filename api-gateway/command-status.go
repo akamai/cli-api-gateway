@@ -27,21 +27,21 @@ import (
 var commandStatus cli.Command = cli.Command{
 	Name:        "status",
 	ArgsUsage:   "",
-	Description: "Review the security status of an API Endpoint",
+	Description: "Show the status of the endpoint on the staging and production netoworks. ",
 	HideHelp:    true,
 	Action:      callStatus,
 	Flags: []cli.Flag{
-		cli.StringFlag{
-			Name:  "endpoint",
-			Usage: "The unique identifier for the endpoint.",
-		},
-		cli.StringFlag{
-			Name:  "version",
-			Usage: "The endpoint version number.",
-		},
 		cli.BoolFlag{
 			Name:  "json",
 			Usage: "Output JSON format",
+		},
+		cli.IntFlag{
+			Name:  "endpoint",
+			Usage: "The endpoint ID to get status information on.",
+		},
+		cli.IntFlag{
+			Name:  "version",
+			Usage: "The endpoint version number.",
 		},
 	},
 }
@@ -53,8 +53,8 @@ func callStatus(c *cli.Context) error {
 	}
 
 	akamai.StartSpinner(
-		"Getting Security Settings...",
-		fmt.Sprintf("Getting Security Settings...... [%s]", color.GreenString("OK")),
+		"Fetching endpoints status...",
+		fmt.Sprintf("Fetching endpoints status...... [%s]", color.GreenString("OK")),
 	)
 
 	version := c.Int("version")
@@ -67,15 +67,15 @@ func callStatus(c *cli.Context) error {
 
 	endpoint, err := api.GetVersion(c.Int("endpoint"), version)
 	if err != nil {
-		return output(c, endpoint, err)
+		return output(c, nil, err)
 	}
 
-	e := &api.EndpointSecurity{
-		APIEndPointID:              endpoint.APIEndPointID,
-		APIEndPointName:            endpoint.APIEndPointName,
-		SecurityScheme:             endpoint.SecurityScheme,
-		AkamaiSecurityRestrictions: endpoint.AkamaiSecurityRestrictions,
+	s := &api.EndpointStatus{
+		APIEndPointID:     endpoint.APIEndPointID,
+		APIEndPointName:   endpoint.APIEndPointName,
+		ProductionVersion: endpoint.ProductionVersion,
+		StagingVersion:    endpoint.StagingVersion,
 	}
 
-	return output(c, e, err)
+	return output(c, s, err)
 }
