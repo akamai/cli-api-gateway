@@ -34,3 +34,28 @@ If you want to compile it from source, you will need Go 1.7 or later, and the [D
     - `go build -o akamai-api-keys.exe ./api-keys`
     - `go build -o akamai-api-security.exe ./api-security`
 5. Move the binaries in to your `PATH`
+
+## API Gateway: Usage
+
+```
+akamai api-gateway [global flags] <command> [sub-command]
+```
+
+## Sub-Commands
+- list - List Commands
+- help - Displays help information
+- create - Create an API Endpoint
+- import - Create or Update an API Endpoint using the specified Swagger 2.0 or RAML 0.8 file
+- update - Update an API Endpoint version
+- list-endpoints - Retrieve a list of APIs running through the Gateway
+- list-resources - Retrieve a list resources for a given endpoint.
+- activate - Activate an API
+- remove - Remove an API Endpoint
+- privacy-add - Set an endpoint/resource/method to public/private
+- clone - Clone an API Endpoint version
+- status - Show the status of the API endpoint
+
+## Global Flags
+- `--edgerc value` — Location of the credentials file (default: "/Users/dshafik") [$AKAMAI_EDGERC]
+- `--section value` — Section of the credentials file (default: "default") [$AKAMAI_EDGERC_SECTION]
+- `--version`, `-v` — print the version
